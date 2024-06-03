@@ -19,10 +19,6 @@ import { RolesEnum } from '../../enums/roles.enum';
 import { EstadosActividadEnum } from '../../enums/estados-actividad.enum';
 import { EditActividadDto } from '../../dtos/edit-actividad.dto';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { MatIconModule } from '@angular/material/icon';
-import { UsuariosService } from '../../services/usuarios.service';
-import { MatDialog } from '@angular/material/dialog';
-import { UserInfoDialogComponent } from '../UserInfoDialog/UserInfoDialog.component';
 
 
 /**
@@ -42,8 +38,7 @@ import { UserInfoDialogComponent } from '../UserInfoDialog/UserInfoDialog.compon
     TablaBaseComponent,
     TableModule,
     BaseComponent,
-    ConfirmDialogModule,
-    MatIconModule
+    ConfirmDialogModule
   ],
   templateUrl: './actividades-ejecutor.component.html',
   styleUrl: './actividades-ejecutor.component.scss',
@@ -62,9 +57,8 @@ export class ActividadesEjecutorComponent {
     private auditoriaactividadesService: AuditoriaActividadesService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private router: Router,
-    private usuariosService: UsuariosService,
-    private dialog: MatDialog
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.columnas = [
@@ -210,45 +204,6 @@ export class ActividadesEjecutorComponent {
       },
       reject: () => {
       }
-    });
-  }
-  ejecutor() {
-    this.usuariosService.getUsuarios().subscribe({
-      next: (usuarios) => {
-        // Verifica que se estén obteniendo los usuarios correctamente
-        console.log('Usuarios obtenidos:', usuarios);
-  
-        // Filtra solo los ejecutores
-        const ejecutores = usuarios.filter(usuario => usuario.rol === 'EJECUTOR');
-  
-        // Abre el diálogo de información del usuario solo si se obtuvieron ejecutores
-        if (ejecutores && ejecutores.length > 0) {
-          // Abre el diálogo para mostrar la información de cada ejecutor
-          ejecutores.forEach(ejecutor => {
-            const dialogRef = this.dialog.open(UserInfoDialogComponent, {
-              data: ejecutor // Pasamos cada ejecutor como datos al diálogo
-            });
-  
-            // Maneja el evento después de cerrar el diálogo
-            dialogRef.afterClosed().subscribe(result => {
-              console.log('El diálogo de información del usuario se ha cerrado');
-            });
-          });
-        } else {
-          // Maneja el caso en que no se obtengan ejecutores
-          console.log('No se encontraron ejecutores');
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'No se encontraron ejecutores',
-          });
-        }
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Ocurrió un error al recuperar la lista de usuarios',
-        });
-      },
     });
   }
 }

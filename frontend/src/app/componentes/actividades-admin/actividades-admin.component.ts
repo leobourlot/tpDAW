@@ -13,10 +13,7 @@ import { TablaBaseComponent } from '../tabla-base/tabla-base.component';
 import { BaseComponent } from '../base/base.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { UserInfoDialogComponent } from '../UserInfoDialog/UserInfoDialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { UsuariosService } from '../../services/usuarios.service';
-import { MatIconModule } from '@angular/material/icon';
+
 /**
  * Pantalla para los usuarios con el rol de ADMINISTRADOR
  */
@@ -35,8 +32,7 @@ import { MatIconModule } from '@angular/material/icon';
     TableModule,
     BaseComponent,
     InputTextModule,
-    ConfirmDialogModule,
-    MatIconModule
+    ConfirmDialogModule
   ],
   templateUrl: './actividades-admin.component.html',
   styleUrl: './actividades-admin.component.scss',
@@ -54,9 +50,7 @@ export class ActividadesAdminComponent {
     private actividadesService: ActividadesService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private router: Router,
-    private usuariosService: UsuariosService,
-    private dialog: MatDialog
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -172,43 +166,5 @@ export class ActividadesAdminComponent {
     });
   }
   
-  openUserInfo() {
-    this.usuariosService.getUsuarios().subscribe({
-      next: (usuarios) => {
-        // Verifica que se estén obteniendo los usuarios correctamente
-        console.log('Usuarios obtenidos:', usuarios);
   
-        // Filtra solo los administradores
-        const administradores = usuarios.filter(usuario => usuario.rol === 'ADMINISTRADOR');
-  
-        // Abre el diálogo de información del usuario solo si se obtuvieron administradores
-        if (administradores && administradores.length > 0) {
-          // Abre el diálogo para mostrar la información de cada administrador
-          administradores.forEach(administrador => {
-            const dialogRef = this.dialog.open(UserInfoDialogComponent, {
-              data: administrador // Pasamos cada administrador como datos al diálogo
-            });
-  
-            // Maneja el evento después de cerrar el diálogo
-            dialogRef.afterClosed().subscribe(result => {
-              console.log('El diálogo de información del usuario se ha cerrado');
-            });
-          });
-        } else {
-          // Maneja el caso en que no se obtengan administradores
-          console.log('No se encontraron administradores');
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'No se encontraron administradores',
-          });
-        }
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Ocurrió un error al recuperar la lista de usuarios',
-        });
-      },
-    });
-  }}
-
+}
